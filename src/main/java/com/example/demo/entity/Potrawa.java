@@ -1,11 +1,18 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 @Table(name = "potrawa")
+@Getter 
+@Setter
+@NoArgsConstructor
 public class Potrawa {
 
     @Id
@@ -20,21 +27,4 @@ public class Potrawa {
 
     @OneToMany(mappedBy = "potrawa", cascade = CascadeType.ALL)
     private List<SzczegolyZamowienia> szczegoly;
-
-    public Potrawa() {}
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNazwa() { return nazwa; }
-    public void setNazwa(String nazwa) { this.nazwa = nazwa; }
-
-    public BigDecimal getCenaBazowa() { return cenaBazowa; }
-    public void setCenaBazowa(BigDecimal cenaBazowa) { this.cenaBazowa = cenaBazowa; }
-
-    public List<Receptury> getReceptury() { return receptury; }
-    public void setReceptury(List<Receptury> receptury) { this.receptury = receptury; }
-
-    public List<SzczegolyZamowienia> getSzczegoly() { return szczegoly; }
-    public void setSzczegoly(List<SzczegolyZamowienia> szczegoly) { this.szczegoly = szczegoly; }
 }
