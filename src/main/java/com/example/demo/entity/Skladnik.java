@@ -1,10 +1,17 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.List;
 
 @Entity
 @Table(name = "skladnik")
+@Getter 
+@Setter
+@NoArgsConstructor
 public class Skladnik {
 
     @Id
@@ -16,18 +23,4 @@ public class Skladnik {
 
     @OneToMany(mappedBy = "skladnik", cascade = CascadeType.ALL)
     private List<Receptury> receptury;
-
-    public Skladnik() {}
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNazwa() { return nazwa; }
-    public void setNazwa(String nazwa) { this.nazwa = nazwa; }
-
-    public Integer getStanMagazynowy() { return stanMagazynowy; }
-    public void setStanMagazynowy(Integer stanMagazynowy) { this.stanMagazynowy = stanMagazynowy; }
-
-    public List<Receptury> getReceptury() { return receptury; }
-    public void setReceptury(List<Receptury> receptury) { this.receptury = receptury; }
 }
