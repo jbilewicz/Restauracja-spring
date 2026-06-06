@@ -6,11 +6,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.List;
 
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.KlientDTO;
@@ -38,12 +41,13 @@ public class KlientController {
 	}
 	
 	@PostMapping
-	public KlientDTO addKlient(@PathVariable Klient klient) {
+	@ResponseStatus(HttpStatus.CREATED)
+	public KlientDTO addKlient(@RequestBody Klient klient) {
 		return klientService.createKlient(klient);
 	}
 	
 	@DeleteMapping("/{id}")
-	public String deleteKlient(@PathVariable Long id) {
+	public String deleteKlient(@PathVariable("id") Long id) {
 		klientService.deleteKlient(id);
 		return "Usunięto klienta o ID: " + id;
 	}
