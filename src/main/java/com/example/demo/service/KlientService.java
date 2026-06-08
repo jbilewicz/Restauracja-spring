@@ -35,6 +35,18 @@ public class KlientService {
         return new KlientDTO(savedKlient);
     }
     
+    public KlientDTO updateKlient(Long id, Klient updatedKlient) {
+    	Klient existingKlient = klientRepository.findById(id)
+    			.orElseThrow(() -> new RuntimeException("Nie znaleziono klienta o ID: " + id));
+    	
+    	existingKlient.setImie(updatedKlient.getImie());
+    	existingKlient.setNazwisko(updatedKlient.getNazwisko());
+    	
+    	Klient savedKlient = klientRepository.save(existingKlient);
+    	
+    	return new KlientDTO(savedKlient);
+    }
+    
     public void deleteKlient(Long id) {
         if (!klientRepository.existsById(id)) {
             throw new RuntimeException("Klient o podanym ID nie istnieje");
