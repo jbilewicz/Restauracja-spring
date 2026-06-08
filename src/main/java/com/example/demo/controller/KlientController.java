@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -46,8 +47,13 @@ public class KlientController {
 		return klientService.createKlient(klient);
 	}
 	
+	@PutMapping("/{id}")
+	public KlientDTO updateKlient(@PathVariable Long id, @RequestBody Klient klient) {
+		return klientService.updateKlient(id, klient);
+	}
+	
 	@DeleteMapping("/{id}")
-	public String deleteKlient(@PathVariable("id") Long id) {
+	public String deleteKlient(@PathVariable Long id) {
 		klientService.deleteKlient(id);
 		return "Usunięto klienta o ID: " + id;
 	}
