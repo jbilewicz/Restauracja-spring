@@ -1,23 +1,82 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.SzczegolyZamowienia;
-import com.example.demo.repository.SzczegolyZamowieniaRepository;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.demo.dto.SzczegolyZamowieniaDTO;
+import com.example.demo.entity.Potrawa;
+import com.example.demo.entity.SzczegolyZamowienia;
+import com.example.demo.entity.Zamowienie;
+import com.example.demo.repository.PotrawRepository;
+import com.example.demo.repository.SzczegolyZamowieniaRepository;
+import com.example.demo.repository.ZamowienieRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class SzczegolyZamowieniaService {
 
     private final SzczegolyZamowieniaRepository szczegolyRepository;
+    private final PotrawRepository potrawRepository;
+    private final ZamowienieRepository zamowienieRepository;
 
-    public SzczegolyZamowieniaService(SzczegolyZamowieniaRepository szczegolyRepository) {
-        this.szczegolyRepository = szczegolyRepository;
+    public List<SzczegolyZamowieniaDTO> getAllSzczegoly() {
+        return szczegolyRepository.findAll().stream()
+                .map(SzczegolyZamowieniaDTO::new)
+                .collect(Collectors.toList());
     }
 
-    public List<SzczegolyZamowienia> findAll() { return szczegolyRepository.findAll(); }
-    public Optional<SzczegolyZamowienia> findById(Long id) { return szczegolyRepository.findById(id); }
-    public SzczegolyZamowienia save(SzczegolyZamowienia s) { return szczegolyRepository.save(s); }
-    public void deleteById(Long id) { szczegolyRepository.deleteById(id); }
+    public SzczegolyZamowieniaDTO getSzczegolyById(Long id) {
+        SzczegolyZamowienia szczegoly = szczegolyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono szczegółów o ID: " + id));
+        return new SzczegolyZamowieniaDTO(szczegoly);
+    }
+
+    // Specjalna metoda: pobieranie wszystkich pozycji dla konkretnego zamówienia
+    public List<SzczegolyZamowieniaDTO> getSzczegolyByZamowienieId(Long zamowienieId) {
+        return szczegolyRepository.findAll().stream()
+                .filter(sz -> sz.getZamowienie() != null && sz.getZamowienie().getId().equals(zamowienieId))
+                .map(SzczegolyZamowieniaDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public SzczegolyZamowieniaDTO createSzczegoly(SzczegolyZamowienia szczegol) {
+        Zamowienie zamowienie = zamowienieRepository.findById(szczegol.getZamowienie().getId())
+                .orElseThrow(() -> new RuntimeException("Brak zamówienia o podanym ID"));
+        
+        Potrawa potrawa = potrawRepository.findById(szczegol.getPotrawa().getId())
+                .orElseThrow(() -> new RuntimeException("Brak potrawy o podanym ID"));
+
+        szczegol.setZamowienie(zamowienie);
+        szczegol.setPotrawa(potrawa);
+        
+        // Jeśli klient nie podał ceny w JSONie, automatycznie pobieramy z cennika potrawy
+        if (szczegol.getCenaJednostkowa() == null) {
+            szczegol.setCenaJednostkowa(potrawa.getCenaBazowa());
+        }
+
+        SzczegolyZamowienia saved = szczegolyRepository.save(szczegol);
+        return new SzczegolyZamowieniaDTO(saved);
+    }
+
+    // Aktualizacja obejmuje tylko zmianę ilości sztuk
+    public SzczegolyZamowieniaDTO updateIlosc(Long id, Integer nowaIlosc) {
+        SzczegolyZamowienia istniejace = szczegolyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono pozycji o ID: " + id));
+
+        istniejace.setIlosc(nowaIlosc);
+        
+        SzczegolyZamowienia updated = szczegolyRepository.save(istniejace);
+        return new SzczegolyZamowieniaDTO(updated);
+    }
+
+    public void deleteSzczegoly(Long id) {
+        if (!szczegolyRepository.existsById(id)) {
+            throw new RuntimeException("Pozycja o podanym ID nie istnieje");
+        }
+        szczegolyRepository.deleteById(id);
+    }
 }
