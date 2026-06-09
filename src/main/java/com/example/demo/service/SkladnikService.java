@@ -44,11 +44,27 @@ public class SkladnikService {
         Skladnik updated = skladnikRepository.save(skladnik);
         return new SkladnikDTO(updated);
     }
-
+    
+    public SkladnikDTO updateSkladnik(Long id, Skladnik updatedSkladnik) {
+        Skladnik existing = skladnikRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono składnika o ID: " + id));
+        
+        existing.setNazwa(updatedSkladnik.getNazwa());
+        existing.setStanMagazynowy(updatedSkladnik.getStanMagazynowy());
+        
+        return new SkladnikDTO(skladnikRepository.save(existing));
+    }
+    
     public void deleteSkladnik(Long id) {
         if (!skladnikRepository.existsById(id)) {
             throw new ResourceNotFoundException("Składnik o podanym ID nie istnieje");
         }
         skladnikRepository.deleteById(id);
+    }
+    
+    public List<com.example.demo.dto.RaportBrakowDTO> getRaportBrakow(Integer progBezpieczenstwa) {
+        return skladnikRepository.findKrytyczneBraki(progBezpieczenstwa).stream()
+                .map(com.example.demo.dto.RaportBrakowDTO::new)
+                .collect(Collectors.toList());
     }
 }

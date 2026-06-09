@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.example.demo.repository.ZamowienieRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class KlientService {
 
     private final KlientRepository klientRepository;
 
+    private final ZamowienieRepository zamowienieRepository;
+    
     public List<KlientDTO> getAllKlienci() { 
     	return klientRepository.findAll().stream()
     			.map(KlientDTO::new)
@@ -53,5 +57,25 @@ public class KlientService {
             throw new ResourceNotFoundException("Klient o podanym ID nie istnieje");
         }
         klientRepository.deleteById(id);
+    }
+    
+
+    public java.util.Map<String, Object> getLTV(Long klientId) {
+        if (!klientRepository.existsById(klientId)) {
+            throw new com.example.demo.exception.ResourceNotFoundException("Nie znaleziono klienta o ID: " + klientId);
+        }
+
+        BigDecimal ltv = zamowienieRepository.obliczLTVKlienta(klientId);
+
+        if (ltv == null) {
+            ltv = BigDecimal.ZERO;
+        }
+
+        java.util.Map<String, Object> response = new java.util.LinkedHashMap<>();
+        response.put("klientId", klientId);
+        response.put("totalLifetimeValue", ltv);
+        response.put("waluta", "PLN");
+        
+        return response;
     }
 }

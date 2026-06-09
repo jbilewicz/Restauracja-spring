@@ -46,9 +46,20 @@ public class SkladnikController {
         return skladnikService.dodajDostawe(id, ilosc);
     }
 
+    @PutMapping("/{id}")
+    public SkladnikDTO updateSkladnik(@PathVariable("id") Long id, @RequestBody Skladnik skladnik) {
+        return skladnikService.updateSkladnik(id, skladnik);
+    }
+
     @DeleteMapping("/{id}")
     public String deleteSkladnik(@PathVariable("id") Long id) {
         skladnikService.deleteSkladnik(id);
         return "Usunięto składnik o ID: " + id;
+    }
+    
+    @GetMapping("/raport-brakow")
+    public List<com.example.demo.dto.RaportBrakowDTO> generujRaportBrakow(
+            @RequestParam(value = "prog", defaultValue = "50") Integer prog) {
+        return skladnikService.getRaportBrakow(prog);
     }
 }

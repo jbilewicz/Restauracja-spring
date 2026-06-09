@@ -62,4 +62,9 @@ public class KlientController {
 	public Object getZamowieniaKlienta(@PathVariable Long id) {
 		return "Endpoint z zamówieniami dla klienta: " + id;
 	}
+
+    @GetMapping("/{id}/ltv")
+    public java.util.Map<String, Object> getKlientLTV(@PathVariable("id") Long id) {
+        return klientService.getLTV(id);
+    }
 }
