@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.SkladnikDTO;
 import com.example.demo.entity.Skladnik;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.SkladnikRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class SkladnikService {
 
     public SkladnikDTO getSkladnikById(Long id) {
         Skladnik skladnik = skladnikRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono składnika o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono składnika o ID: " + id));
         return new SkladnikDTO(skladnik);
     }
 
@@ -34,10 +35,9 @@ public class SkladnikService {
         return new SkladnikDTO(saved);
     }
 
-    // Specjalna metoda ze scenariusza (Update - dodanie dostawy)
     public SkladnikDTO dodajDostawe(Long id, Integer iloscDostarczona) {
         Skladnik skladnik = skladnikRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono składnika o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono składnika o ID: " + id));
 
         skladnik.setStanMagazynowy(skladnik.getStanMagazynowy() + iloscDostarczona);
         
@@ -47,7 +47,7 @@ public class SkladnikService {
 
     public void deleteSkladnik(Long id) {
         if (!skladnikRepository.existsById(id)) {
-            throw new RuntimeException("Składnik o podanym ID nie istnieje");
+            throw new ResourceNotFoundException("Składnik o podanym ID nie istnieje");
         }
         skladnikRepository.deleteById(id);
     }

@@ -11,6 +11,7 @@ import com.example.demo.dto.ZamowienieDTO;
 import com.example.demo.entity.Klient;
 import com.example.demo.entity.Skladnik;
 import com.example.demo.entity.Zamowienie;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.KlientRepository;
 import com.example.demo.repository.SkladnikRepository;
 import com.example.demo.repository.ZamowienieRepository;
@@ -33,7 +34,7 @@ public class ZamowienieService {
 
     public ZamowienieDTO getZamowienieById(Long id) {
         Zamowienie zamowienie = zamowienieRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono zamówienia o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono zamówienia o ID: " + id));
         return new ZamowienieDTO(zamowienie);
     }
 
@@ -54,7 +55,7 @@ public class ZamowienieService {
     @Transactional
     public ZamowienieDTO createZamowienie(Zamowienie zamowienie) {
         Klient klient = klientRepository.findById(zamowienie.getKlient().getId())
-                .orElseThrow(() -> new RuntimeException("Brak klienta o podanym ID"));
+                .orElseThrow(() -> new ResourceNotFoundException("Brak klienta o podanym ID"));
         
         zamowienie.setKlient(klient);
         zamowienie.setData(LocalDateTime.now()); 
@@ -66,7 +67,7 @@ public class ZamowienieService {
     @Transactional
     public ZamowienieDTO updateStatus(Long id, String nowyStatus) {
         Zamowienie zamowienie = zamowienieRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono zamówienia o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono zamówienia o ID: " + id));
 
         String obecnyStatus = zamowienie.getStatus();
 
@@ -84,7 +85,7 @@ public class ZamowienieService {
     @Transactional
     public void deleteZamowienie(Long id) {
         if (!zamowienieRepository.existsById(id)) {
-            throw new RuntimeException("Zamówienie o podanym ID nie istnieje");
+            throw new ResourceNotFoundException("Zamówienie o podanym ID nie istnieje");
         }
         zamowienieRepository.deleteById(id);
     }
