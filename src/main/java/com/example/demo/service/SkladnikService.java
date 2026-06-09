@@ -35,15 +35,6 @@ public class SkladnikService {
         return new SkladnikDTO(saved);
     }
 
-    public SkladnikDTO dodajDostawe(Long id, Integer iloscDostarczona) {
-        Skladnik skladnik = skladnikRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono składnika o ID: " + id));
-
-        skladnik.setStanMagazynowy(skladnik.getStanMagazynowy() + iloscDostarczona);
-        
-        Skladnik updated = skladnikRepository.save(skladnik);
-        return new SkladnikDTO(updated);
-    }
     
     public SkladnikDTO updateSkladnik(Long id, Skladnik updatedSkladnik) {
         Skladnik existing = skladnikRepository.findById(id)

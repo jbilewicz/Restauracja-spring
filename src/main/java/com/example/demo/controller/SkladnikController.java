@@ -41,11 +41,6 @@ public class SkladnikController {
         return skladnikService.createSkladnik(skladnik);
     }
 
-    @PutMapping("/{id}/dostawa")
-    public SkladnikDTO zaksiegujDostawe(@PathVariable("id") Long id, @RequestParam("ilosc") Integer ilosc) {
-        return skladnikService.dodajDostawe(id, ilosc);
-    }
-
     @PutMapping("/{id}")
     public SkladnikDTO updateSkladnik(@PathVariable("id") Long id, @RequestBody Skladnik skladnik) {
         return skladnikService.updateSkladnik(id, skladnik);
