@@ -9,6 +9,7 @@ import com.example.demo.dto.SzczegolyZamowieniaDTO;
 import com.example.demo.entity.Potrawa;
 import com.example.demo.entity.SzczegolyZamowienia;
 import com.example.demo.entity.Zamowienie;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PotrawaRepository;
 import com.example.demo.repository.SzczegolyZamowieniaRepository;
 import com.example.demo.repository.ZamowienieRepository;
@@ -31,11 +32,10 @@ public class SzczegolyZamowieniaService {
 
     public SzczegolyZamowieniaDTO getSzczegolyById(Long id) {
         SzczegolyZamowienia szczegoly = szczegolyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono szczegółów o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono szczegółów o ID: " + id));
         return new SzczegolyZamowieniaDTO(szczegoly);
     }
 
-    // Specjalna metoda: pobieranie wszystkich pozycji dla konkretnego zamówienia
     public List<SzczegolyZamowieniaDTO> getSzczegolyByZamowienieId(Long zamowienieId) {
         return szczegolyRepository.findAll().stream()
                 .filter(sz -> sz.getZamowienie() != null && sz.getZamowienie().getId().equals(zamowienieId))
@@ -45,15 +45,14 @@ public class SzczegolyZamowieniaService {
 
     public SzczegolyZamowieniaDTO createSzczegoly(SzczegolyZamowienia szczegol) {
         Zamowienie zamowienie = zamowienieRepository.findById(szczegol.getZamowienie().getId())
-                .orElseThrow(() -> new RuntimeException("Brak zamówienia o podanym ID"));
+                .orElseThrow(() -> new ResourceNotFoundException("Brak zamówienia o podanym ID"));
         
         Potrawa potrawa = potrawRepository.findById(szczegol.getPotrawa().getId())
-                .orElseThrow(() -> new RuntimeException("Brak potrawy o podanym ID"));
+                .orElseThrow(() -> new ResourceNotFoundException("Brak potrawy o podanym ID"));
 
         szczegol.setZamowienie(zamowienie);
         szczegol.setPotrawa(potrawa);
-        
-        // Jeśli klient nie podał ceny w JSONie, automatycznie pobieramy z cennika potrawy
+ 
         if (szczegol.getCenaJednostkowa() == null) {
             szczegol.setCenaJednostkowa(potrawa.getCenaBazowa());
         }
@@ -62,10 +61,9 @@ public class SzczegolyZamowieniaService {
         return new SzczegolyZamowieniaDTO(saved);
     }
 
-    // Aktualizacja obejmuje tylko zmianę ilości sztuk
     public SzczegolyZamowieniaDTO updateIlosc(Long id, Integer nowaIlosc) {
         SzczegolyZamowienia istniejace = szczegolyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono pozycji o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono pozycji o ID: " + id));
 
         istniejace.setIlosc(nowaIlosc);
         
@@ -75,7 +73,7 @@ public class SzczegolyZamowieniaService {
 
     public void deleteSzczegoly(Long id) {
         if (!szczegolyRepository.existsById(id)) {
-            throw new RuntimeException("Pozycja o podanym ID nie istnieje");
+            throw new ResourceNotFoundException("Pozycja o podanym ID nie istnieje");
         }
         szczegolyRepository.deleteById(id);
     }

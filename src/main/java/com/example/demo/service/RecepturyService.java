@@ -9,6 +9,7 @@ import com.example.demo.dto.RecepturyDTO;
 import com.example.demo.entity.Potrawa;
 import com.example.demo.entity.Receptury;
 import com.example.demo.entity.Skladnik;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PotrawaRepository;
 import com.example.demo.repository.RecepturyRepository;
 import com.example.demo.repository.SkladnikRepository;
@@ -31,7 +32,7 @@ public class RecepturyService {
 
     public RecepturyDTO getRecepturaById(Long id) {
         Receptury receptura = recepturyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono receptury o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono receptury o ID: " + id));
         return new RecepturyDTO(receptura);
     }
 
@@ -44,9 +45,9 @@ public class RecepturyService {
 
     public RecepturyDTO createReceptura(Receptury receptura) {
         Potrawa potrawa = potrawRepository.findById(receptura.getPotrawa().getId())
-                .orElseThrow(() -> new RuntimeException("Brak potrawy o podanym ID"));
+                .orElseThrow(() -> new ResourceNotFoundException("Brak potrawy o podanym ID"));
         Skladnik skladnik = skladnikRepository.findById(receptura.getSkladnik().getId())
-                .orElseThrow(() -> new RuntimeException("Brak składnika o podanym ID"));
+                .orElseThrow(() -> new ResourceNotFoundException("Brak składnika o podanym ID"));
         
         receptura.setPotrawa(potrawa);
         receptura.setSkladnik(skladnik);
@@ -57,7 +58,7 @@ public class RecepturyService {
 
     public RecepturyDTO updateReceptura(Long id, Receptury updatedData) {
         Receptury istniejaca = recepturyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono receptury o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono receptury o ID: " + id));
 
         istniejaca.setIloscSkladnika(updatedData.getIloscSkladnika());
         istniejaca.setJednostka(updatedData.getJednostka());
@@ -67,7 +68,7 @@ public class RecepturyService {
 
     public void deleteReceptura(Long id) {
         if (!recepturyRepository.existsById(id)) {
-            throw new RuntimeException("Receptura o podanym ID nie istnieje");
+            throw new ResourceNotFoundException("Receptura o podanym ID nie istnieje");
         }
         recepturyRepository.deleteById(id);
     }

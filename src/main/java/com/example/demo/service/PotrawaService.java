@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.PotrawaDTO;
 import com.example.demo.entity.Potrawa;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PotrawaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class PotrawaService {
     
     public PotrawaDTO getPotrawaById(Long id) { 
         Potrawa potrawa = potrawRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono potrawy o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono potrawy o ID: " + id));
         return new PotrawaDTO(potrawa);
     }
     
@@ -38,7 +39,7 @@ public class PotrawaService {
     
     public PotrawaDTO updatePotrawa(Long id, Potrawa updatedPotrawa) {
         Potrawa existingPotrawa = potrawRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono potrawy o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono potrawy o ID: " + id));
         
         existingPotrawa.setNazwa(updatedPotrawa.getNazwa());
         existingPotrawa.setCenaBazowa(updatedPotrawa.getCenaBazowa());
@@ -50,7 +51,7 @@ public class PotrawaService {
     
     public void deletePotrawa(Long id) {
         if (!potrawRepository.existsById(id)) {
-            throw new RuntimeException("Potrawa o podanym ID nie istnieje");
+            throw new ResourceNotFoundException("Potrawa o podanym ID nie istnieje");
         }
         potrawRepository.deleteById(id);
     }

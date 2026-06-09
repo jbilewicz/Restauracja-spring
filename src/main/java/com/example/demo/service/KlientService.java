@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.KlientDTO;
 import com.example.demo.entity.Klient;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.KlientRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class KlientService {
     
     public KlientDTO getKlientById(Long id) { 
     	Klient klient = klientRepository.findById(id)
-    			.orElseThrow(() -> new RuntimeException("Nie znaleziono klienta o ID: " + id));
+    			.orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono klienta o ID: " + id));
     	return new KlientDTO(klient);
     }
     
@@ -37,7 +38,7 @@ public class KlientService {
     
     public KlientDTO updateKlient(Long id, Klient updatedKlient) {
     	Klient existingKlient = klientRepository.findById(id)
-    			.orElseThrow(() -> new RuntimeException("Nie znaleziono klienta o ID: " + id));
+    			.orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono klienta o ID: " + id));
     	
     	existingKlient.setImie(updatedKlient.getImie());
     	existingKlient.setNazwisko(updatedKlient.getNazwisko());
@@ -49,7 +50,7 @@ public class KlientService {
     
     public void deleteKlient(Long id) {
         if (!klientRepository.existsById(id)) {
-            throw new RuntimeException("Klient o podanym ID nie istnieje");
+            throw new ResourceNotFoundException("Klient o podanym ID nie istnieje");
         }
         klientRepository.deleteById(id);
     }
