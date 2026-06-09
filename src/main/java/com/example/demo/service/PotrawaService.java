@@ -71,4 +71,10 @@ public class PotrawaService {
             potrawRepository.save(p);
         }
     }
+
+    public List<PotrawaDTO> getPelneMenu() {
+        return potrawRepository.pobierzPelneMenu().stream()
+                .map(PotrawaDTO::new)
+                .collect(Collectors.toList());
+    }
 }

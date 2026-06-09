@@ -9,6 +9,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.dto.BestsellerDTO;
 import com.example.demo.dto.SzczegolyZamowieniaDTO;
 import com.example.demo.entity.SzczegolyZamowienia;
 import com.example.demo.service.SzczegolyZamowieniaService;
@@ -54,5 +55,10 @@ public class SzczegolyZamowieniaController {
     public String deleteSzczegoly(@PathVariable("id") Long id) {
         szczegolyService.deleteSzczegoly(id);
         return "Usunięto pozycję o ID: " + id;
+    }
+    
+    @GetMapping("/bestsellery")
+    public List<BestsellerDTO> getBestsellery() {
+        return szczegolyService.getRankingBestsellerow();
     }
 }
