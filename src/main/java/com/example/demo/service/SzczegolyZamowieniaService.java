@@ -9,7 +9,7 @@ import com.example.demo.dto.SzczegolyZamowieniaDTO;
 import com.example.demo.entity.Potrawa;
 import com.example.demo.entity.SzczegolyZamowienia;
 import com.example.demo.entity.Zamowienie;
-import com.example.demo.repository.PotrawRepository;
+import com.example.demo.repository.PotrawaRepository;
 import com.example.demo.repository.SzczegolyZamowieniaRepository;
 import com.example.demo.repository.ZamowienieRepository;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class SzczegolyZamowieniaService {
 
     private final SzczegolyZamowieniaRepository szczegolyRepository;
-    private final PotrawRepository potrawRepository;
+    private final PotrawaRepository potrawRepository;
     private final ZamowienieRepository zamowienieRepository;
 
     public List<SzczegolyZamowieniaDTO> getAllSzczegoly() {

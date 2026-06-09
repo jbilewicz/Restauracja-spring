@@ -9,7 +9,7 @@ import com.example.demo.dto.RecepturyDTO;
 import com.example.demo.entity.Potrawa;
 import com.example.demo.entity.Receptury;
 import com.example.demo.entity.Skladnik;
-import com.example.demo.repository.PotrawRepository;
+import com.example.demo.repository.PotrawaRepository;
 import com.example.demo.repository.RecepturyRepository;
 import com.example.demo.repository.SkladnikRepository;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class RecepturyService {
 
     private final RecepturyRepository recepturyRepository;
-    private final PotrawRepository potrawRepository;
+    private final PotrawaRepository potrawRepository;
     private final SkladnikRepository skladnikRepository;
 
     public List<RecepturyDTO> getAllReceptury() {

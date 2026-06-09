@@ -1,21 +1,23 @@
 package com.example.demo.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.PotrawaDTO;
 import com.example.demo.entity.Potrawa;
-import com.example.demo.repository.PotrawRepository;
+import com.example.demo.repository.PotrawaRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PotrawService {
+public class PotrawaService {
 
-    private final PotrawRepository potrawRepository;
+    private final PotrawaRepository potrawRepository;
 
     public List<PotrawaDTO> getAllPotrawy() { 
         return potrawRepository.findAll().stream()
@@ -51,5 +53,21 @@ public class PotrawService {
             throw new RuntimeException("Potrawa o podanym ID nie istnieje");
         }
         potrawRepository.deleteById(id);
+    }
+    
+    @Transactional
+    public void aktualizujCenyKaskadowo(Long skladnikId, BigDecimal zmianaCeny) {
+        List<Potrawa> potrawyDoAktualizacji = potrawRepository.findPotrawyBySkladnikId(skladnikId);
+        
+        for (Potrawa p : potrawyDoAktualizacji) {
+            BigDecimal nowaCena = p.getCenaBazowa().add(zmianaCeny);
+            
+            if (nowaCena.compareTo(BigDecimal.ZERO) < 0) {
+                nowaCena = BigDecimal.ZERO;
+            }
+            
+            p.setCenaBazowa(nowaCena);
+            potrawRepository.save(p);
+        }
     }
 }
