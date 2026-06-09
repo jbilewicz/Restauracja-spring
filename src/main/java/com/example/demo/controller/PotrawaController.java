@@ -29,6 +29,12 @@ public class PotrawaController {
         return CollectionModel.of(potrawy, linkTo(methodOn(PotrawaController.class).getAllPotrawy()).withSelfRel());
     }
     
+    @GetMapping("/menu")
+    public CollectionModel<PotrawaDTO> getPelneMenu() {
+        List<PotrawaDTO> menu = potrawService.getPelneMenu();
+        return CollectionModel.of(menu, linkTo(methodOn(PotrawaController.class).getPelneMenu()).withSelfRel());
+    }
+    
     @GetMapping("/{id}") 
     public PotrawaDTO getPotrawaById(@PathVariable("id") Long id) {
         return potrawService.getPotrawaById(id);

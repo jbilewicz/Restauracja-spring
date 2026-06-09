@@ -13,4 +13,7 @@ public interface PotrawaRepository extends JpaRepository<Potrawa, Long> {
 
     @Query("SELECT DISTINCT p FROM Potrawa p JOIN p.receptury r WHERE r.skladnik.id = :skladnikId")
     List<Potrawa> findPotrawyBySkladnikId(@Param("skladnikId") Long skladnikId);
+
+    @Query("SELECT DISTINCT p FROM Potrawa p LEFT JOIN FETCH p.receptury r LEFT JOIN FETCH r.skladnik")
+    List<Potrawa> pobierzPelneMenu();
 }

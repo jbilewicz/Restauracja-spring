@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.BestsellerDTO;
 import com.example.demo.dto.SzczegolyZamowieniaDTO;
 import com.example.demo.entity.Potrawa;
 import com.example.demo.entity.SzczegolyZamowienia;
@@ -76,5 +77,8 @@ public class SzczegolyZamowieniaService {
             throw new ResourceNotFoundException("Pozycja o podanym ID nie istnieje");
         }
         szczegolyRepository.deleteById(id);
+    }
+    public List<BestsellerDTO> getRankingBestsellerow() {
+        return szczegolyRepository.findBestsellery();
     }
 }
