@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.KlientDTO;
 import com.example.demo.entity.Klient;
 import com.example.demo.service.KlientService;
+import com.example.demo.service.ZamowienieService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class KlientController {
 	
 	private final KlientService klientService;
+	private final ZamowienieService zamowienieService;
 	
 	@GetMapping 
 	public CollectionModel<KlientDTO> getAllKlienci() {
@@ -60,7 +62,7 @@ public class KlientController {
 	
 	@GetMapping("/{id}/zamowienia")
 	public Object getZamowieniaKlienta(@PathVariable Long id) {
-		return "Endpoint z zamówieniami dla klienta: " + id;
+		return zamowienieService.getZamowieniaByKlient(id);
 	}
 
     @GetMapping("/{id}/ltv")
